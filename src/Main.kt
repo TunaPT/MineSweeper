@@ -49,7 +49,7 @@ fun makeMenu(): String = "1 - Start New Game\n0 - Exit Game"
 
 fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boolean = true, withColor: Boolean = false): String = ""
 
-fun isNameValid(name: String?, minLength: Int): Boolean {
+fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
         var position = 0
         while (name[position] != ' ') {
