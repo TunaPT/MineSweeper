@@ -2,6 +2,7 @@ fun main() {
     val invalid = "Invalid response.\n"
     var wantLegend = false
     var column = 0
+    var line = 0
     var mines = 0
     do {
         println(makeMenu())
@@ -30,11 +31,11 @@ fun main() {
 
             do {
                 println("How many lines?")
-                val line = readLine()!!
-                if (line != "1") {
+                line = readLine()!!.toInt()
+                if (line != 1) {
                     println(invalid)
                 }
-            } while (line != "1")
+            } while (line != 1)
 
             do {
                 println("How many columns?")
@@ -44,11 +45,17 @@ fun main() {
                 }
             } while (column < 3)
 
-            println("How many mines (press enter for default value)?")
-            mines = readLine()?.toIntOrNull()?:3
+            do {
+                println("How many mines (press enter for default value)?")
+                mines = readLine()?.toIntOrNull() ?: 3
+            } while (!isValidGameMinesConfiguration(line,column,mines))
+
             if (wantLegend) {
-                createLegend(column)
+                println(createLegend(column))
                 }
+            if (mines!= null) {
+                println(makeTerrain(line, column, mines))
+            }
         }
     } while (num != "0" && num != "1")
 }
@@ -71,6 +78,8 @@ fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boole
     }
     return " P " + numeroMines + "| f "
 }
+
+//Rever função acima
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
