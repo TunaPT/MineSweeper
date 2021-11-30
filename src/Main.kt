@@ -55,7 +55,22 @@ fun main() {
 
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
 
-fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boolean = true, withColor: Boolean = false): String = ""
+fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boolean = true, withColor: Boolean = false): String {
+    val terreno = numLines*numColumns
+    var count = numMines
+    var spaces = 0
+    var numeroMines = ""
+    while (count != 0) {
+        count -= 1
+        spaces += 1
+        numeroMines = numeroMines + "| * "
+    }
+    while (spaces != numColumns-2) {
+        spaces += 1
+        numeroMines = numeroMines + "|   "
+    }
+    return " P " + numeroMines + "| f "
+}
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
