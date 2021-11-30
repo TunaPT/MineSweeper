@@ -51,11 +51,10 @@ fun main() {
             } while (!isValidGameMinesConfiguration(line,column,mines))
 
             if (wantLegend) {
-                println(createLegend(column))
-                }
-            if (mines!= null) {
-                println(makeTerrain(line, column, mines))
-            }
+                val legend2 = createLegend(column)
+                val terrain = makeTerrain(line, column, mines)
+                println("   $legend2\n$line $terrain\n")
+                } else println(makeTerrain(line, column, mines))
         }
     } while (num != "0" && num != "1")
 }
