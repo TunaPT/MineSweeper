@@ -49,12 +49,7 @@ fun main() {
                 println("How many mines (press enter for default value)?")
                 mines = readLine()?.toIntOrNull() ?: 3
             } while (!isValidGameMinesConfiguration(line,column,mines))
-
-            if (wantLegend) {
-                val legend2 = createLegend(column)
-                val terrain = makeTerrain(line, column, mines)
-                println("   $legend2\n$line $terrain\n")
-                } else println(makeTerrain(line, column, mines))
+            println(makeTerrain(line, column, mines))
         }
     } while (num != "0" && num != "1")
 }
@@ -63,21 +58,32 @@ fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n
 
 fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boolean = true, withColor: Boolean = false): String {
     val terreno = numLines*numColumns
+    var espaco = 0
+    var spaceString = ""
     var count = numMines
     var spaces = 0
     var numeroMines = ""
+    while (espaco != terreno) {
+        espaco++
+        spaceString = spaceString + "    "
+    }
     while (count != 0) {
         count -= 1
         spaces += 1
         numeroMines = numeroMines + "| * "
     }
-    while (spaces != numColumns-2) {
+    while (spaces != numColumns - 2) {
         spaces += 1
         numeroMines = numeroMines + "|   "
     }
-    return " P " + numeroMines + "| f "
+    if (!showLegend) {
+        return " P " + numeroMines + "| f "
+    } else {
+        val legend2 = createLegend(numColumns)
+        val terrain = " P " + numeroMines + "| f "
+        return "    $legend2    \n $numLines $terrain   \n$spaceString     "
+    }
 }
-
 //Rever função acima
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
