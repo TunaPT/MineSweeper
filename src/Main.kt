@@ -4,6 +4,7 @@ fun main() {
     var column = 0
     var line = 0
     var mines = 0
+
     do {
         println(makeMenu())
         val num = readLine()
@@ -14,11 +15,11 @@ fun main() {
             do {
                 println("Enter player name?")
                 val name = readLine()
-                if (!isNameValid(name, 3)) {
+                if (!isNameValid(name,3)) {
                     println(invalid)
                 }
-            } while (!isNameValid(name, 3))
-
+            } while (!isNameValid(name,3))
+//Diferença entre minLength = 3 e "minLength:3" ?
             do {
                 println("Show legend (y/n)?")
                 val legend = readLine()!!
@@ -44,11 +45,13 @@ fun main() {
                     println(invalid)
                 }
             } while (column < 3)
+//Dúvida: Lines e colunas nao tem de ser var/val ?
 
             do {
                 println("How many mines (press enter for default value)?")
                 mines = readLine()?.toIntOrNull() ?: 3
             } while (!isValidGameMinesConfiguration(line,column,mines))
+ //Dúvida: Bool !isValidGameMinesConfiguration
             println(makeTerrain(line, column, mines))
         }
     } while (num != "0" && num != "1")
@@ -84,7 +87,8 @@ fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boole
         return "    $legend2    \n $numLines $terrain   \n$spaceString     "
     }
 }
-//Rever função acima
+//Não entendi spaceString !
+//Minas ainda não necessitam de random certo ?
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
@@ -101,6 +105,8 @@ fun isNameValid(name: String?, minLength: Int = 3): Boolean {
         } else return false
     } else return false
 }
+//Possivel erro mas acho que não entra nos requesitos da função.
+//Upper cases a balda + MinLenght não é respeitado
 
 fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int? {
     val casasVazias = numLines*numColumns-2
@@ -129,7 +135,7 @@ fun createLegend(numColumns: Int): String {
     }
     return legendString
 }
-
+//Não entendi como a função createLegend funciona.
 fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int): Boolean {
     val casasVazias = numLines*numColumns-2
     if (numMines <= 0 || casasVazias < numMines) {
