@@ -57,13 +57,16 @@ fun main() {
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
 
 fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boolean = true, withColor: Boolean = false): String {
+    val esc: String = "\u001B"
+    val legendColor = "$esc[97;44m"
+    val endLegendColor = "$esc[0m"
     val terreno = numLines*numColumns
     var espaco = 0
     var spaceString = ""
     var count = numMines
     var spaces = 0
     var numeroMines = ""
-    while (espaco != terreno) {
+    while (espaco != terreno) { //Adiciona os espaços na ultima linha
         espaco++
         spaceString = spaceString + "    "
     }
@@ -81,10 +84,16 @@ fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boole
     } else {
         val legend2 = createLegend(numColumns)
         val terrain = " P " + numeroMines + "| f "
-        return "    $legend2    \n $numLines $terrain   \n$spaceString     "
+        if (!withColor) {
+            return "    $legend2    \n $numLines $terrain   \n$spaceString     "
+        } else {
+            val teste = "$legendColor    $legend2    $endLegendColor\n" +
+                    "$legendColor $numLines $endLegendColor$terrain$legendColor   $endLegendColor\n" +
+                    "$legendColor$spaceString     $endLegendColor"
+            return teste
+        }
     }
 }
-//Rever função acima
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
@@ -94,7 +103,7 @@ fun isNameValid(name: String?, minLength: Int = 3): Boolean {
                 position++
             }
             if (name.length > position) {
-                if (name[2] != ' ' && name[0].isUpperCase() && name[position+1].isUpperCase()) {
+                if (name[1] != ' ' && name[2] != ' ' && name[0].isUpperCase() && name[position+1].isUpperCase()) {
                     return true
                 } else return false
             } else return false
