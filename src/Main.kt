@@ -1,6 +1,5 @@
 fun main() {
     val invalid = "Invalid response.\n"
-    var wantLegend = false
     var column = 0
     var line = 0
     var mines = 0
@@ -24,8 +23,6 @@ fun main() {
                 val legend = readLine()!!
                 if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
                     println(invalid)
-                } else {
-                    wantLegend = true
                 }
             } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
 
@@ -61,36 +58,36 @@ fun makeTerrain(numLines: Int, numColumns: Int, numMines: Int, showLegend: Boole
     val legendColor = "$esc[97;44m"
     val endLegendColor = "$esc[0m"
     val terreno = numLines*numColumns
-    var espaco = 0
-    var spaceString = ""
+    var lastLineCount = 0
+    var lastLineString = ""
     var count = numMines
     var spaces = 0
-    var numeroMines = ""
-    while (espaco != terreno) { //Adiciona os espaços na ultima linha
-        espaco++
-        spaceString = spaceString + "    "
+    var stringMines = ""
+    while (lastLineCount != terreno) { //Adiciona os espaços na ultima linha
+        lastLineCount++
+        lastLineString = lastLineString + "    "
     }
     while (count != 0) {
         count -= 1
         spaces += 1
-        numeroMines = numeroMines + "| * "
+        stringMines = stringMines + "| * "
     }
     while (spaces != numColumns - 2) {
         spaces += 1
-        numeroMines = numeroMines + "|   "
+        stringMines = stringMines + "|   "
     }
     if (!showLegend) {
-        return " P " + numeroMines + "| f "
+        return " P " + stringMines + "| f "
     } else {
         val legend2 = createLegend(numColumns)
-        val terrain = " P " + numeroMines + "| f "
+        val terrain = " P " + stringMines + "| f "
         if (!withColor) {
-            return "    $legend2    \n $numLines $terrain   \n$spaceString     "
+            return "    $legend2    \n $numLines $terrain   \n$lastLineString     "
         } else {
-            val teste = "$legendColor    $legend2    $endLegendColor\n" +
+            val legendWithColor = "$legendColor    $legend2    $endLegendColor\n" +
                     "$legendColor $numLines $endLegendColor$terrain$legendColor   $endLegendColor\n" +
-                    "$legendColor$spaceString     $endLegendColor"
-            return teste
+                    "$legendColor$lastLineString     $endLegendColor"
+            return legendWithColor
         }
     }
 }
