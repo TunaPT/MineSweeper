@@ -1,57 +1,71 @@
 fun main() {
+
 }
 
 fun test() {
-    val invalid = "Invalid response.\n"
-    var column = 0
-    var line = 0
-    var mines = 0
-    do {
-        println(makeMenu())
-        val num = readLine()
-        if (num != "0" && num != "1") {
-            println(invalid)
-        }
-        if (num == "1") {
-            do {
-                println("Enter player name?")
-                val name = readLine()
-                if (!isNameValid(name, 3)) {
-                    println(invalid)
-                }
-            } while (!isNameValid(name, 3))
+    var sair = false
+    do{
+        val invalid = "Invalid response.\n"
+        var column = 0
+        var line = 0
+        var mines = 0
+        do {
+            println(makeMenu())
+            val num = readLine()
+            if (num != "0" && num != "1") {
+                println(invalid)
+            }
+            if (num == "1") {
+                do {
+                    println("Enter player name?")
+                    val name = readLine()
+                    if (!isNameValid(name, 3)) {
+                        println(invalid)
+                    }
+                } while (!isNameValid(name, 3))
 
-            do {
-                println("Show legend (y/n)?")
-                val legend = readLine()!!
-                if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
-                    println(invalid)
-                }
-            } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
+                do {
+                    println("Show legend (y/n)?")
+                    val legend = readLine()!!
+                    if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
+                        println(invalid)
+                    }
+                } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
 
-            do {
-                println("How many lines?")
-                line = readLine()!!.toInt()
-                if (line != 1) {
-                    println(invalid)
-                }
-            } while (line != 1)
+                do {
+                    println("How many lines?")
+                    line = readLine()!!.toInt()
+                    if (line != 1) {
+                        println(invalid)
+                    }
+                } while (line != 1)
 
-            do {
-                println("How many columns?")
-                column = readLine()!!.toInt()
-                if (column < 3) {
-                    println(invalid)
-                }
-            } while (column < 3)
+                do {
+                    println("How many columns?")
+                    column = readLine()!!.toInt()
+                    if (column < 3) {
+                        println(invalid)
+                    }
+                } while (column < 3)
 
-            do {
-                println("How many mines (press enter for default value)?")
-                mines = readLine()?.toIntOrNull() ?: 3
-            } while (!isValidGameMinesConfiguration(line,column,mines))
-            //println(makeTerrain(line, column, mines))
-        }
-    } while (num != "0" && num != "1")
+                do {
+                    println("How many mines (press enter for default value)?")
+                    mines = readLine()?.toIntOrNull() ?: 3
+                } while (!isValidGameMinesConfiguration(line,column,mines))
+                //println(makeTerrain(line, column, mines))
+            }
+            if (num == "1"){
+                println("Prima Qualquer tecla para Continuar")
+                println("Prima 0 para Sair")
+                var saida = readLine()?.toIntOrNull()?:1
+                if (saida == 0){
+                    sair = true
+                }
+            }else{
+                sair = true
+            }
+        } while (num != "0" && num != "1")
+    }while (!sair)
 }
 
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
