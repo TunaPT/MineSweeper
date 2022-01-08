@@ -26,8 +26,11 @@ fun main() {
                     val legend = readLine()!!
                     if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
                         println(invalid)
-                    } else {
+                    }
+                    if (legend == "y" || legend == "Y") {
                         wantLegend = true
+                    } else if (legend == "n" || legend == "N") {
+                        wantLegend = false
                     }
                 } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
 
@@ -84,19 +87,42 @@ fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n
 fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean, showEverything: Boolean): String {
     var tabuleiroStr = " "
     var count = 0
-    var countLegend = 0
+    var countLegend = 1
+    var spaceString = ""
     var linhaSize = matrixTerrain.size
+    var doneLegend = false
     val colunaSize = matrixTerrain[matrixTerrain.size-1].size
 
     for (linha in 0 until matrixTerrain.size) {
         count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
+            spaceString = spaceString + "    " //espaços aqui
             if (coluna < matrixTerrain[linha].size-1) {
                 if (showEverything) {
-                    tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                    if (showLegend) {
+                        if (!doneLegend) {
+                            doneLegend = true
+                            tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
+                            countLegend += 1
+                        } else {
+                            tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                        }
+                    } else {
+                        tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                    }
                 } else {
                     if (matrixTerrain[linha][coluna].second == true) {
-                        tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                        if (showLegend) {
+                            if (!doneLegend) {
+                                doneLegend = true
+                                tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
+                                countLegend += 1
+                            } else {
+                                tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                            }
+                        } else {
+                            tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                        }
                     } else {
                         tabuleiroStr += "  | "
                     }
@@ -116,22 +142,41 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
         }
         tabuleiroStr += " "
         if (count != matrixTerrain.size) {
-            //if (!showLegend)
-            tabuleiroStr += "\n"
-            for (coluna in 0 until matrixTerrain[linha].size) {
-                tabuleiroStr += "---"
-                if (coluna < matrixTerrain[linha].size-1) {
-                    tabuleiroStr += "+"
+            if (!showLegend) {
+                tabuleiroStr += "\n"
+                for (coluna in 0 until matrixTerrain[linha].size) {
+                    if (coluna != matrixTerrain[linha].size) {
+                        tabuleiroStr += "---"
+                    } else {
+                        tabuleiroStr += "---   "
+                    }
+                    if (coluna < matrixTerrain[linha].size-1) {
+                        tabuleiroStr += "+"
+                    }
                 }
+                tabuleiroStr += "\n "
+            } else {
+                tabuleiroStr += "\n   "
+                for (coluna in 0 until matrixTerrain[linha].size) {
+                    if (coluna != matrixTerrain[linha].size-1) {
+                        tabuleiroStr += "---"
+                    } else {
+                        tabuleiroStr += "---   "
+                    }
+                    if (coluna < matrixTerrain[linha].size-1) {
+                        tabuleiroStr += "+"
+                    }
+                }
+                tabuleiroStr += "\n $countLegend  "
+                countLegend += 1
             }
-            tabuleiroStr += "\n "
         }
     }
     if (!showLegend) {
         return tabuleiroStr
     } else {
         val legend2 = createLegend(colunaSize)
-        return " $legend2    \n$tabuleiroStr"
+        return "    $legend2    \n$tabuleiroStr   \n$spaceString     "
     }
 }
 
