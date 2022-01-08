@@ -54,10 +54,7 @@ fun main() {
                         println(invalid)
                     }
                 } while (!isValidGameMinesConfiguration(line,column,mines))
-                //val teste = createMatrixTerrain(line, column, mines)
-                //fillNumberOfMines(teste)
-                //val terreno = makeTerrain(teste,false,false,false)
-                //println(terreno)
+                fillNumberOfMines(createMatrixTerrain(line, column, mines))
                 println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
             }
             if (num == "1"){
@@ -101,6 +98,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
             tabuleiroStr += "\n "
         }
     }
+
     return tabuleiroStr
 }
 
@@ -280,7 +278,58 @@ fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) {
     }
 }
 
-fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int, coordX: Int, endGame: Boolean = false) = false
+fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int, coordX: Int, endGame: Boolean = false) {
+    var numeroAtual = ""
+    if (coordY > 0 && coordX > 0) {
+        if (matrixTerrain[coordY - 1][coordX - 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY - 1][coordX - 1].first
+            matrixTerrain[coordY - 1][coordX - 1] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordY > 0 && coordX < matrixTerrain.size-1) {
+        if (matrixTerrain[coordY - 1][coordX + 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY - 1][coordX + 1].first
+            matrixTerrain[coordY - 1][coordX + 1] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordY < matrixTerrain.size-1 && coordX > 0) {
+        if (matrixTerrain[coordY + 1][coordX - 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY + 1][coordX - 1].first
+            matrixTerrain[coordY + 1][coordX - 1] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordY < matrixTerrain.size-1 && coordX < matrixTerrain.size-1) {
+        if (matrixTerrain[coordY + 1][coordX + 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY + 1][coordX + 1].first
+            matrixTerrain[coordY + 1][coordX + 1] = Pair("$numeroAtual", true)
+        }
+    }
+    // Check Above, Below, Sides
+    if (coordY < matrixTerrain.size-1) {
+        if (matrixTerrain[coordY + 1][coordX].first != "*") {
+            numeroAtual = matrixTerrain[coordY + 1][coordX].first
+            matrixTerrain[coordY + 1][coordX] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordY > 0) {
+        if (matrixTerrain[coordY - 1][coordX].first != "*") {
+            numeroAtual = matrixTerrain[coordY - 1][coordX].first
+            matrixTerrain[coordY - 1][coordX] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordX > 0) {
+        if (matrixTerrain[coordY][coordX - 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY][coordX - 1].first
+            matrixTerrain[coordY][coordX - 1] = Pair("$numeroAtual", true)
+        }
+    }
+    if (coordX < matrixTerrain.size-1) {
+        if (matrixTerrain[coordY][coordX + 1].first != "*") {
+            numeroAtual = matrixTerrain[coordY][coordX + 1].first
+            matrixTerrain[coordY][coordX + 1] = Pair("$numeroAtual", true)
+        }
+    }
+}
 
 fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int, yl: Int, xl: Int, yr: Int, xr: Int): Boolean = false
 
