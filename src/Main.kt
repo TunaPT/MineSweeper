@@ -1,10 +1,11 @@
 fun main() {
     var sair = false
+    var column = 0
+    var line = 0
+    var mines = 0
+    var wantLegend = false
     do{
         val invalid = "Invalid response.\n"
-        var column = 0
-        var line = 0
-        var mines = 0
         do {
             println(makeMenu())
             val num = readLine()
@@ -25,6 +26,8 @@ fun main() {
                     val legend = readLine()!!
                     if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
                         println(invalid)
+                    } else {
+                        wantLegend = true
                     }
                 } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
 
@@ -57,7 +60,7 @@ fun main() {
                 val teste = createMatrixTerrain(line, column, mines)
                 fillNumberOfMines(teste)
                 revealMatrix(teste,0,0)
-                val terreno = makeTerrain(teste,false,false,false)
+                val terreno = makeTerrain(teste,wantLegend,false,false)
                 println(terreno)
                 //fillNumberOfMines(createMatrixTerrain(line, column, mines))
                 //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
@@ -81,6 +84,9 @@ fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n
 fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean, showEverything: Boolean): String {
     var tabuleiroStr = " "
     var count = 0
+    var countLegend = 0
+    var linhaSize = matrixTerrain.size
+    val colunaSize = matrixTerrain[matrixTerrain.size-1].size
 
     for (linha in 0 until matrixTerrain.size) {
         count += 1
@@ -110,6 +116,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
         }
         tabuleiroStr += " "
         if (count != matrixTerrain.size) {
+            //if (!showLegend)
             tabuleiroStr += "\n"
             for (coluna in 0 until matrixTerrain[linha].size) {
                 tabuleiroStr += "---"
@@ -120,24 +127,13 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
             tabuleiroStr += "\n "
         }
     }
-
-    return tabuleiroStr
-}
-
-    /*if (!showLegend) {
-        return " P " + stringMines + "| f "
+    if (!showLegend) {
+        return tabuleiroStr
     } else {
-        val legend2 = createLegend(numColumns)
-        val terrain = " P " + stringMines + "| f "
-        if (!withColor) {
-            return "    $legend2    \n $numLines $terrain   \n$lastLineString     "
-        } else {
-            val legendWithColor = "$legendColor    $legend2    $endLegendColor\n" +
-                    "$legendColor $numLines $endLegendColor$terrain$legendColor   $endLegendColor\n" +
-                    "$legendColor$lastLineString     $endLegendColor"
-            return legendWithColor
-        }
-    }*/
+        val legend2 = createLegend(colunaSize)
+        return " $legend2    \n$tabuleiroStr"
+    }
+}
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
@@ -220,10 +216,10 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
 
             val placingMine = arrayOfPairs[randomInLine][randomInColumn]
 
-            if(placingMine == Pair(" ", false)) {
-                arrayOfPairs[randomInLine][randomInColumn] = Pair("*", false)
-                complete = false
-            }
+                if (placingMine == Pair(" ", false)) {
+                    arrayOfPairs[randomInLine][randomInColumn] = Pair("*", false)
+                    complete = false
+                }
         }
     }
     return arrayOfPairs
