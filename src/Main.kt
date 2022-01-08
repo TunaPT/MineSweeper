@@ -349,9 +349,24 @@ fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int
     }
 }
 
-fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int, yl: Int, xl: Int, yr: Int, xr: Int): Boolean = false
+fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int, yl: Int, xl: Int, yr: Int, xr: Int): Boolean {
+    var maxLinha = matrixTerrain.size
+    var maxColuna = 0
+    for (linha in 0 until matrixTerrain.size) {
+        for (coluna in 0 until matrixTerrain[linha].size) {
+            maxColuna = matrixTerrain[linha].size
+        }
+    }
+    return false
+}
 
-fun isMovementPValid(currentCoord : Pair<Int, Int>, targetCoord : Pair<Int, Int>): Boolean = false
+fun isMovementPValid(currentCoord : Pair<Int, Int>, targetCoord : Pair<Int, Int>): Boolean {
+    if (targetCoord.first+1 == currentCoord.first || targetCoord.first-1 == currentCoord.first || targetCoord.first == currentCoord.first) {
+        if (targetCoord.second+1 == currentCoord.second || targetCoord.second-1 == currentCoord.second || targetCoord.second == currentCoord.second) {
+            return true
+        } else return false
+    } else return false
+}
 
 fun isCoordinateInsideTerrain(coord: Pair<Int, Int>, numColumns: Int, numLines: Int): Boolean {
     if (coord.first < numColumns && coord.second < numLines) {
@@ -392,7 +407,7 @@ fun getCoordinates (readText: String?): Pair<Int, Int>? {
     }
     return null
 }
-//Pair(Pair(2,2),Pair(2,2))
+
 fun getSquareAroundPoint(linha: Int, coluna: Int, numLines: Int, numColumns: Int): Pair<Pair<Int, Int>, Pair<Int, Int>> {
     var linha1 = 0
     var linha2 = 0
