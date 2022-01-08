@@ -108,8 +108,9 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
             }
             tabuleiroStr += ""
         }
-        tabuleiroStr += " \n"
+        tabuleiroStr += " "
         if (count != matrixTerrain.size) {
+            tabuleiroStr += "\n"
             for (coluna in 0 until matrixTerrain[linha].size) {
                 tabuleiroStr += "---"
                 if (coluna < matrixTerrain[linha].size-1) {
