@@ -54,6 +54,10 @@ fun main() {
                         println(invalid)
                     }
                 } while (!isValidGameMinesConfiguration(line,column,mines))
+                //val teste = createMatrixTerrain(line, column, mines)
+                //fillNumberOfMines(teste)
+                //val terreno = makeTerrain(teste,false,false,false)
+                //println(terreno)
                 println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
             }
             if (num == "1"){
@@ -212,23 +216,23 @@ fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String,
             count += 1
         }
     }
-    if (centerY > 0 && centerX < matrixTerrain.size) {
+    if (centerY > 0 && centerX < matrixTerrain.size-1) {
         if (matrixTerrain[centerY - 1][centerX + 1].first == "*") {
             count += 1
         }
     }
-    if (centerY < matrixTerrain.size && centerX > 0) {
+    if (centerY < matrixTerrain.size-1 && centerX > 0) {
         if (matrixTerrain[centerY + 1][centerX - 1].first == "*") {
             count += 1
         }
     }
-    if (centerY < matrixTerrain.size && centerX < matrixTerrain.size) {
+    if (centerY < matrixTerrain.size-1 && centerX < matrixTerrain.size-1) {
         if (matrixTerrain[centerY + 1][centerX + 1].first == "*") {
             count += 1
         }
     }
     // Check Above, Below, Sides
-    if (centerY < matrixTerrain.size) {
+    if (centerY < matrixTerrain.size-1) {
         if (matrixTerrain[centerY + 1][centerX].first == "*") {
             count += 1
         }
@@ -243,7 +247,7 @@ fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String,
             count += 1
         }
     }
-    if (centerX < matrixTerrain.size) {
+    if (centerX < matrixTerrain.size-1) {
         if (matrixTerrain[centerY][centerX + 1].first == "*") {
             count += 1
         }
@@ -251,7 +255,30 @@ fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String,
     return count
 }
 
-fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) = 2
+fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) {
+    var count = 0
+
+    for (linha in 0 until matrixTerrain.size) {
+        count += 1
+        for (coluna in 0 until matrixTerrain[linha].size) {
+            if (coluna < matrixTerrain[linha].size-1) {
+                if (matrixTerrain[linha][coluna].first == " ") {
+                    val numMine = countNumberOfMinesCloseToCurrentCell(matrixTerrain, linha, coluna)
+                    if (numMine != 0) {
+                        matrixTerrain[linha][coluna] = Pair("$numMine", false)
+                    }
+                }
+            } else {
+                if (matrixTerrain[linha][coluna].first == " ") {
+                    val numMine2 = countNumberOfMinesCloseToCurrentCell(matrixTerrain, linha, coluna)
+                    if (numMine2 != 0) {
+                        matrixTerrain[linha][coluna] = Pair("$numMine2", false)
+                    }
+                }
+            }
+        }
+    }
+}
 
 fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int, coordX: Int, endGame: Boolean = false) = false
 
