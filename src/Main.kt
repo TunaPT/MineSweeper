@@ -392,5 +392,31 @@ fun getCoordinates (readText: String?): Pair<Int, Int>? {
     }
     return null
 }
-
-fun getSquareAroundPoint(linha: Int, coluna: Int, numLines: Int, numColumns: Int): Pair<Pair<Int, Int>, Pair<Int, Int>> = Pair(Pair(2,2),Pair(2,2))
+//Pair(Pair(2,2),Pair(2,2))
+fun getSquareAroundPoint(linha: Int, coluna: Int, numLines: Int, numColumns: Int): Pair<Pair<Int, Int>, Pair<Int, Int>> {
+    var linha1 = 0
+    var linha2 = 0
+    var coluna1 = 0
+    var coluna2 = 0
+    if (linha > 0) {
+        linha1 = linha-1
+    } else {
+        linha1 = linha
+    }
+    if (linha < numLines) {
+        linha2 = linha+1
+    } else {
+        linha2 = linha
+    }
+    if (coluna > 0) {
+        coluna1 = coluna-1
+    } else {
+        coluna1 = coluna
+    }
+    if (coluna < numColumns) {
+        coluna2 = coluna+1
+    } else {
+        coluna2 = coluna
+    }
+    return Pair(Pair(linha1,coluna1),Pair(linha2,coluna2))
+}
