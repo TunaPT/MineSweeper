@@ -186,7 +186,7 @@ fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int)
 fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = false): Array<Array<Pair<String,Boolean>>>{
     var firstPart = arrayOf(Pair("P", true))
     for (k in 0..numColumns - 2){
-        firstPart += Pair("", false)
+        firstPart += Pair(" ", false)
     }
 
     var lastPart = arrayOf(Pair(" ", false))
