@@ -1,6 +1,3 @@
-fun teste() {
-}
-
 fun main() {
     var sair = false
     do{
@@ -49,7 +46,10 @@ fun main() {
 
                 do {
                     println("How many mines (press enter for default value)?")
-                    mines = readLine()!!.toIntOrNull() ?: calculateNumMinesForGameConfiguration(line, column)
+                    val numOfMines = calculateNumMinesForGameConfiguration(line, column)
+                    if (numOfMines != null) {
+                        mines = readLine()!!.toIntOrNull() ?: numOfMines
+                    }
                     if (!isValidGameMinesConfiguration(line,column,mines)) {
                         println(invalid)
                     }
@@ -59,7 +59,7 @@ fun main() {
             if (num == "1"){
                 println("Prima Qualquer tecla para Continuar")
                 println("Prima 0 para Sair")
-                var saida = readLine()?.toIntOrNull()?:1
+                val saida = readLine()?.toIntOrNull()?:1
                 if (saida == 0){
                     sair = true
                 }
@@ -100,31 +100,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
     return tabuleiroStr
 }
 
-
-
-    /*val esc: String = "\u001B"
-    val legendColor = "$esc[97;44m"
-    val endLegendColor = "$esc[0m"
-    val terreno = matrixTerrain
-    var lastLineCount = 0
-    var lastLineString = ""
-    var count = numMines
-    var spaces = 0
-    var stringMines = ""
-    while (lastLineCount != terreno) { //Adiciona os espaços na ultima linha
-        lastLineCount++
-        lastLineString = lastLineString + "    "
-    }
-    while (count != 0) {
-        count -= 1
-        spaces += 1
-        stringMines = stringMines + "| * "
-    }
-    while (spaces != numColumns - 2) {
-        spaces += 1
-        stringMines = stringMines + "|   "
-    }
-    if (!showLegend) {
+    /*if (!showLegend) {
         return " P " + stringMines + "| f "
     } else {
         val legend2 = createLegend(numColumns)
@@ -155,7 +131,7 @@ fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     } else return false
 }
 
-fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int {
+fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int? {
     val casasVazias = numLines*numColumns-2
     if (casasVazias in 14..20) {
         return 6
@@ -165,7 +141,7 @@ fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int {
         return 12
     } else if (casasVazias in 61..79) {
         return 19
-    } else return 0
+    } else return null
 }
 
 fun createLegend(numColumns: Int): String {
@@ -229,7 +205,51 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
     return arrayOfPairs
 }
 
-fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int): Int = 2
+fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int): Int {
+    var count = 0
+    if (centerY > 0 && centerX > 0) {
+        if (matrixTerrain[centerY - 1][centerX - 1].first == "*") {
+            count += 1
+        }
+    }
+    if (centerY > 0 && centerX < matrixTerrain.size) {
+        if (matrixTerrain[centerY - 1][centerX + 1].first == "*") {
+            count += 1
+        }
+    }
+    if (centerY < matrixTerrain.size && centerX > 0) {
+        if (matrixTerrain[centerY + 1][centerX - 1].first == "*") {
+            count += 1
+        }
+    }
+    if (centerY < matrixTerrain.size && centerX < matrixTerrain.size) {
+        if (matrixTerrain[centerY + 1][centerX + 1].first == "*") {
+            count += 1
+        }
+    }
+    // Check Above, Below, Sides
+    if (centerY < matrixTerrain.size) {
+        if (matrixTerrain[centerY + 1][centerX].first == "*") {
+            count += 1
+        }
+    }
+    if (centerY > 0) {
+        if (matrixTerrain[centerY - 1][centerX].first == "*") {
+            count += 1
+        }
+    }
+    if (centerX > 0) {
+        if (matrixTerrain[centerY][centerX - 1].first == "*") {
+            count += 1
+        }
+    }
+    if (centerX < matrixTerrain.size) {
+        if (matrixTerrain[centerY][centerX + 1].first == "*") {
+            count += 1
+        }
+    }
+    return count
+}
 
 fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) = 2
 
