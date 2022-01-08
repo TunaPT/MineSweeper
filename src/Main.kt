@@ -49,7 +49,10 @@ fun main() {
 
                 do {
                     println("How many mines (press enter for default value)?")
-                    mines = readLine()?.toIntOrNull() ?: 6
+                    mines = readLine()!!.toIntOrNull() ?: calculateNumMinesForGameConfiguration(line, column)
+                    if (!isValidGameMinesConfiguration(line,column,mines)) {
+                        println(invalid)
+                    }
                 } while (!isValidGameMinesConfiguration(line,column,mines))
                 println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
             }
@@ -152,7 +155,7 @@ fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     } else return false
 }
 
-fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int? {
+fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int {
     val casasVazias = numLines*numColumns-2
     if (casasVazias in 14..20) {
         return 6
@@ -162,7 +165,7 @@ fun calculateNumMinesForGameConfiguration(numLines: Int, numColumns: Int): Int? 
         return 12
     } else if (casasVazias in 61..79) {
         return 19
-    } else return null
+    } else return 0
 }
 
 fun createLegend(numColumns: Int): String {
