@@ -54,8 +54,13 @@ fun main() {
                         println(invalid)
                     }
                 } while (!isValidGameMinesConfiguration(line,column,mines))
-                fillNumberOfMines(createMatrixTerrain(line, column, mines))
-                println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
+                val teste = createMatrixTerrain(line, column, mines)
+                fillNumberOfMines(teste)
+                revealMatrix(teste,0,0)
+                val terreno = makeTerrain(teste,false,false,false)
+                println(terreno)
+                //fillNumberOfMines(createMatrixTerrain(line, column, mines))
+                //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
             }
             if (num == "1"){
                 println("Prima Qualquer tecla para Continuar")
@@ -81,9 +86,25 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
         count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
             if (coluna < matrixTerrain[linha].size-1) {
-                tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                if (showEverything) {
+                    tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                } else {
+                    if (matrixTerrain[linha][coluna].second == true) {
+                        tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                    } else {
+                        tabuleiroStr += "  | "
+                    }
+                }
             } else {
-                tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+                if (showEverything) {
+                    tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+                } else {
+                    if (matrixTerrain[linha][coluna].second == true) {
+                        tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+                    } else {
+                        tabuleiroStr += " "
+                    }
+                }
             }
             tabuleiroStr += ""
         }
@@ -254,10 +275,7 @@ fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String,
 }
 
 fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) {
-    var count = 0
-
     for (linha in 0 until matrixTerrain.size) {
-        count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
             if (coluna < matrixTerrain[linha].size-1) {
                 if (matrixTerrain[linha][coluna].first == " ") {
