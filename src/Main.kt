@@ -1,7 +1,7 @@
-fun main() {
+fun teste() {
 }
 
-fun test() {
+fun main() {
     var sair = false
     do{
         val invalid = "Invalid response.\n"
@@ -51,7 +51,7 @@ fun test() {
                     println("How many mines (press enter for default value)?")
                     mines = readLine()?.toIntOrNull() ?: 6
                 } while (!isValidGameMinesConfiguration(line,column,mines))
-                //println(makeTerrain(line, column, mines))
+                println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
             }
             if (num == "1"){
                 println("Prima Qualquer tecla para Continuar")
@@ -69,11 +69,40 @@ fun test() {
 
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
 
-fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean, showEverything: Boolean): String = " "/*{
-    val esc: String = "\u001B"
+fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean, showEverything: Boolean): String {
+    var tabuleiroStr = " "
+    var count = 0
+
+    for (linha in 0 until matrixTerrain.size) {
+        count += 1
+        for (coluna in 0 until matrixTerrain[linha].size) {
+            if (coluna < matrixTerrain[linha].size-1) {
+                tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+            } else {
+                tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+            }
+            tabuleiroStr += ""
+        }
+        tabuleiroStr += " \n"
+        if (count != matrixTerrain.size) {
+            for (coluna in 0 until matrixTerrain[linha].size) {
+                tabuleiroStr += "---"
+                if (coluna < matrixTerrain[linha].size-1) {
+                    tabuleiroStr += "+"
+                }
+            }
+            tabuleiroStr += "\n "
+        }
+    }
+    return tabuleiroStr
+}
+
+
+
+    /*val esc: String = "\u001B"
     val legendColor = "$esc[97;44m"
     val endLegendColor = "$esc[0m"
-    val terreno = numLines*numColumns
+    val terreno = matrixTerrain
     var lastLineCount = 0
     var lastLineString = ""
     var count = numMines
@@ -105,8 +134,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                     "$legendColor$lastLineString     $endLegendColor"
             return legendWithColor
         }
-    }
-}*/
+    }*/
 
 fun isNameValid(name: String?, minLength: Int = 3): Boolean {
     if (name != null) {
@@ -155,8 +183,48 @@ fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int)
     } else return true
 }
 
-fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean): Array<Array<Pair<String, Boolean>>> = arrayOf(
-    arrayOf(Pair("",false)))
+fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = false): Array<Array<Pair<String,Boolean>>>{
+    var firstPart = arrayOf(Pair("P", true))
+    for (k in 0..numColumns - 2){
+        firstPart += Pair("", false)
+    }
+
+    var lastPart = arrayOf(Pair(" ", false))
+    for(i in 0..numColumns - 3){
+        lastPart += Pair(" ", false)
+    }
+    lastPart += Pair("f", true)
+
+    var arrayOfPairs = arrayOf(arrayOf(Pair(" ", false)))
+    arrayOfPairs.set(0, firstPart)
+
+    for(k in 0..numLines - 3) {
+        var array = arrayOf(Pair(" ", false))
+
+        for(i in 0..numColumns - 2){
+            array += Pair(" ", false)
+        }
+
+        arrayOfPairs += array
+    }
+    arrayOfPairs += lastPart
+
+    for(k in 0 until numMines){
+        var complete = true
+        while(complete) {
+            val randomInLine = (0 until numLines).random()
+            val randomInColumn = (0 until numColumns).random()
+
+            val placingMine = arrayOfPairs[randomInLine][randomInColumn]
+
+            if(placingMine == Pair(" ", false)) {
+                arrayOfPairs[randomInLine][randomInColumn] = Pair("*", false)
+                complete = false
+            }
+        }
+    }
+    return arrayOfPairs
+}
 
 fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int): Int = 2
 
