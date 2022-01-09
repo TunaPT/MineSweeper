@@ -63,7 +63,7 @@ fun main() {
                 val teste = createMatrixTerrain(line, column, mines)
                 fillNumberOfMines(teste)
                 revealMatrix(teste,0,0)
-                val terreno = makeTerrain(teste,wantLegend,false,false)
+                val terreno = makeTerrain(teste,wantLegend,false,true)
                 println(terreno)
                 //fillNumberOfMines(createMatrixTerrain(line, column, mines))
                 //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
@@ -106,7 +106,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
     for (linha in 0 until matrixTerrain.size) {
         count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
-            spaceString = spaceString + "    " //espaços aqui
+            spaceString = spaceString + "   " //espaços aqui
             if (coluna < matrixTerrain[linha].size-1) {
                 if (showEverything) {
                     if (showLegend) {
@@ -238,46 +238,25 @@ fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int)
 }
 
 fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = false): Array<Array<Pair<String,Boolean>>>{
-    var firstPart = arrayOf(Pair("P", true))
-    for (k in 0..numColumns - 2){
-        firstPart += Pair(" ", false)
-    }
 
-    var lastPart = arrayOf(Pair(" ", false))
-    for(i in 0..numColumns - 3){
-        lastPart += Pair(" ", false)
-    }
-    lastPart += Pair("f", true)
+    val matrix = Array(numLines){Array(numColumns){Pair(" ", false)} }
+    matrix[0][0] = Pair("P",true)
+    matrix[numLines-1][numColumns-1] = Pair("f",true)
 
-    var arrayOfPairs = arrayOf(arrayOf(Pair(" ", false)))
-    arrayOfPairs.set(0, firstPart)
-
-    for(k in 0..numLines - 3) {
-        var array = arrayOf(Pair(" ", false))
-
-        for(i in 0..numColumns - 2){
-            array += Pair(" ", false)
-        }
-
-        arrayOfPairs += array
-    }
-    arrayOfPairs += lastPart
-
-    for(k in 0 until numMines){
-        var complete = true
-        while(complete) {
+    var minesNum = numMines
+    if (!ensurePathToWin) {
+        while (minesNum > 0) {
             val randomInLine = (0 until numLines).random()
             val randomInColumn = (0 until numColumns).random()
-
-            val placingMine = arrayOfPairs[randomInLine][randomInColumn]
-
-                if (placingMine == Pair(" ", false)) {
-                    arrayOfPairs[randomInLine][randomInColumn] = Pair("*", false)
-                    complete = false
-                }
+            if (matrix[randomInLine][randomInColumn].first == " ") {
+                matrix[randomInLine][randomInColumn] = Pair("*",false)
+                minesNum--
+            }
         }
+    } else {
+        getSquareAroundPoint(numLines,numColumns,numLines,numColumns)
     }
-    return arrayOfPairs
+    return matrix
 }
 
 fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int): Int {
