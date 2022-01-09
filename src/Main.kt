@@ -72,19 +72,21 @@ fun main() {
                     println("Choose the Target cell (e.g 2D)")
                     val coords = readLine()
                     val funcao = getCoordinates(coords)
-                    if (funcao != null) {
-                        if (isCoordinateInsideTerrain(funcao, column, line)) {
-                            if (isMovementPValid(funcao, funcao)) { //acabar aqui
-                                validou = true
+                    if (coords != "exit") {
+                        if (funcao != null) {
+                            if (isCoordinateInsideTerrain(funcao, column, line)) {
+                                if (isMovementPValid(funcao, funcao)) { //acabar aqui
+                                    validou = true
+                                } else {
+                                    println(invalid)
+                                }
                             } else {
                                 println(invalid)
                             }
                         } else {
                             println(invalid)
                         }
-                    } else {
-                        println(invalid)
-                    }
+                    } else validou = true
                 } while (!validou)
             }
         } while (num != "0" && num != "1")
