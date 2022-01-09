@@ -4,7 +4,7 @@ fun main() {
     var line = 0
     var mines = 0
     var wantLegend = false
-    do{
+    var validou = false
         val invalid = "Invalid response.\n"
         do {
             println(makeMenu())
@@ -67,19 +67,27 @@ fun main() {
                 println(terreno)
                 //fillNumberOfMines(createMatrixTerrain(line, column, mines))
                 //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
-            }
-            if (num == "1"){
-                println("Prima Qualquer tecla para Continuar")
-                println("Prima 0 para Sair")
-                val saida = readLine()?.toIntOrNull()?:1
-                if (saida == 0){
-                    sair = true
-                }
-            }else{
-                sair = true
+
+                do {
+                    println("Choose the Target cell (e.g 2D)")
+                    val coords = readLine()
+                    val funcao = getCoordinates(coords)
+                    if (funcao != null) {
+                        if (isCoordinateInsideTerrain(funcao, column, line)) {
+                            if (isMovementPValid(funcao, funcao)) { //acabar aqui
+                                validou = true
+                            } else {
+                                println(invalid)
+                            }
+                        } else {
+                            println(invalid)
+                        }
+                    } else {
+                        println(invalid)
+                    }
+                } while (!validou)
             }
         } while (num != "0" && num != "1")
-    }while (!sair)
 }
 
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
