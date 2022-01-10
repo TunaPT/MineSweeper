@@ -82,66 +82,38 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
     val colunaSize = matrixTerrain[matrixTerrain.size-1].size
     var spaceAdd = ""
 
-    for (linha in 0 until matrixTerrain.size) {
-        count += 1
+    for (linha in 0 until matrixTerrain.size) { count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
-            if (coluna < matrixTerrain[linha].size-1) {
-                spaceAdd = "${matrixTerrain[linha][coluna].first} | "
+            if (coluna < matrixTerrain[linha].size-1) { spaceAdd = "${matrixTerrain[linha][coluna].first} | "
                 if (showEverything) {
                     if (showLegend) {
                         if (!doneLegend) {
                             doneLegend = true
                             tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
                             countLegend += 1
-                        } else {
-                            tabuleiroStr += spaceAdd
-                        }
-                    } else {
-                        tabuleiroStr += spaceAdd
-                    }
-                } else {
-                    if (matrixTerrain[linha][coluna].second == true) {
+                        } else tabuleiroStr += spaceAdd
+                    } else tabuleiroStr += spaceAdd
+                } else if (matrixTerrain[linha][coluna].second == true) {
                         if (showLegend) {
                             if (!doneLegend) {
                                 doneLegend = true
                                 tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
                                 countLegend += 1
-                            } else {
-                                tabuleiroStr += spaceAdd
-                            }
-                        } else {
-                            tabuleiroStr += spaceAdd
-                        }
-                    } else {
-                        tabuleiroStr += "  | "
-                    }
-                }
-            } else {
-                if (showEverything) {
-                    tabuleiroStr += matrixTerrain[linha][coluna].first
-                } else {
-                    if (matrixTerrain[linha][coluna].second == true) {
-                        tabuleiroStr += matrixTerrain[linha][coluna].first
-                    } else {
-                        tabuleiroStr += " "
-                    }
-                }
-            }
+                            } else tabuleiroStr += spaceAdd
+                        } else tabuleiroStr += spaceAdd
+                    } else tabuleiroStr += "  | "
+            } else if (showEverything) { tabuleiroStr += matrixTerrain[linha][coluna].first
+                } else if (matrixTerrain[linha][coluna].second == true) { tabuleiroStr += matrixTerrain[linha][coluna].first
+                    } else tabuleiroStr += " "
             tabuleiroStr += ""
         }
         tabuleiroStr += " "
         if (count != matrixTerrain.size) {
-            if (!showLegend) {
-                tabuleiroStr += "\n"
+            if (!showLegend) { tabuleiroStr += "\n"
                 for (coluna in 0 until matrixTerrain[linha].size) {
-                    if (coluna != matrixTerrain[linha].size) {
-                        tabuleiroStr += "---"
-                    } else {
-                        tabuleiroStr += "---   "
-                    }
-                    if (coluna < matrixTerrain[linha].size-1) {
-                        tabuleiroStr += "+"
-                    }
+                    if (coluna != matrixTerrain[linha].size) { tabuleiroStr += "---"
+                    } else tabuleiroStr += "---   "
+                    if (coluna < matrixTerrain[linha].size-1) tabuleiroStr += "+"
                 }
                 tabuleiroStr += "\n "
             } else {
