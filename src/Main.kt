@@ -1,5 +1,6 @@
+
+
 fun main() {
-    val sair = false
     var column = 0
     var line = 0
     var mines = 0
@@ -101,13 +102,13 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
     var spaceString = ""
     var doneLegend = false
     val colunaSize = matrixTerrain[matrixTerrain.size-1].size
+    var spaceAdd = ""
 
     for (linha in 0 until matrixTerrain.size) {
         count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
-            val stringformat = "${matrixTerrain[linha][coluna].first} |"
-            //spaceString = spaceString + "  " //espaços aqui
             if (coluna < matrixTerrain[linha].size-1) {
+                spaceAdd = "${matrixTerrain[linha][coluna].first} | "
                 if (showEverything) {
                     if (showLegend) {
                         if (!doneLegend) {
@@ -115,10 +116,10 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                             tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
                             countLegend += 1
                         } else {
-                            tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                            tabuleiroStr += spaceAdd
                         }
                     } else {
-                        tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                        tabuleiroStr += spaceAdd
                     }
                 } else {
                     if (matrixTerrain[linha][coluna].second == true) {
@@ -128,10 +129,10 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                                 tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
                                 countLegend += 1
                             } else {
-                                tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                                tabuleiroStr += spaceAdd
                             }
                         } else {
-                            tabuleiroStr += "${matrixTerrain[linha][coluna].first} | "
+                            tabuleiroStr += spaceAdd
                         }
                     } else {
                         tabuleiroStr += "  | "
@@ -263,7 +264,8 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
             val xleft = squarePoint.first.second
             val yright = squarePoint.second.first
             val xright = squarePoint.second.second
-            if (matrix[randomInLine][randomInColumn].first != "*" && matrix[randomInLine][randomInColumn].first != "P" && matrix[randomInLine][randomInColumn].first != "f") {
+            val matrixCheck = matrix[randomInLine][randomInColumn].first
+            if (matrixCheck != "*" && matrixCheck != "P" && matrixCheck != "f") {
                 if (isEmptyAround(matrix, randomInLine, randomInColumn, yleft, xleft, yright, xright)) {
                     matrix[randomInLine][randomInColumn] = Pair("*", false)
                     minesNum--
