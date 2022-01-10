@@ -2,7 +2,6 @@ var column = 0
 var line = 0
 var mines = 0
 var wantLegend = false
-var validou = false
 val invalid = "Invalid response.\n"
 
 fun main() {
@@ -47,33 +46,53 @@ fun main() {
             revealMatrix(teste,0,0)
             val terreno = makeTerrain(teste,wantLegend,false,false)
             println(terreno)
-            do {
-                println("Choose the Target cell (e.g 2D)")
-                val coords = readLine()
-                val funcao = getCoordinates(coords)
-                if (coords != "exit") {
-                    if (funcao != null) {
-                        if (isCoordinateInsideTerrain(funcao, column, line)) {
-                            if (isMovementPValid(funcao, funcao)) {
-                                validou = true
-                            } else {
-                                println(invalid)
-                            }
-                        } else {
-                            println(invalid)
-                        }
-                    } else {
-                        println(invalid)
-                    }
-                } else validou = true
-            } while (!validou)
+            funcaoTargetCell(teste)
         }
     } while (num != "0" && num != "1")
 }
 
+fun funcaoTargetCell(teste: Array<Array<Pair<String,Boolean>>>) {
+    val matrix = Array(line) { Array(column) { Pair(" ", false) } }
+    var cordenadas: Pair<Int,Int>?
+    var actualPosition = Pair(0,0)
+    var coordsAnterior = Pair(matrix[0][0].first,true)
+    do {
+        do {
+            println("Choose the Target cell (e.g 2D)")
+            val coords = readLine()
+            cordenadas = getCoordinates(coords)
+            if (coords == "exit") return
+            if (coords == "abracadabra") {
+                println(makeTerrain(teste, wantLegend, showEverything = true))
+            } else {
+                if (cordenadas == null || !isMovementPValid(actualPosition, cordenadas) || !isCoordinateInsideTerrain(
+                        cordenadas, line, column)) println(invalid)
+            }
+        } while (cordenadas == null || !isMovementPValid(actualPosition, cordenadas) || !isCoordinateInsideTerrain(
+                cordenadas, line, column))
+        if (teste[cordenadas.first][cordenadas.second].first == "*") {
+            println(makeTerrain(teste, wantLegend, showEverything = true))
+            println("You lost the game!")
+            return main()
+        } else if (teste[cordenadas.first][cordenadas.second].first == "f") {
+            println(makeTerrain(teste, wantLegend, showEverything = true))
+            println("You win the game!")
+            return main()
+        }
+        actualPosition = Pair(cordenadas.first,cordenadas.second)
+        revealMatrix(teste,cordenadas.first, cordenadas.second)
+        coordsAnterior = Pair(teste[cordenadas.first][cordenadas.second].first,true)
+        teste[cordenadas.first][cordenadas.second] = Pair("P",true)
+        teste[0][0] = Pair(" ",true)
+        println(makeTerrain(teste,wantLegend, showEverything = false))
+        teste[cordenadas.first][cordenadas.second] = coordsAnterior
+    } while (true)
+}
+
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
 
-fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean, showEverything: Boolean): String {
+fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: Boolean, withColor: Boolean = false,
+                showEverything: Boolean): String {
     var tabuleiroStr = " "
     var count = 0
     var countLegend = 1
@@ -94,17 +113,17 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                         } else tabuleiroStr += spaceAdd
                     } else tabuleiroStr += spaceAdd
                 } else if (matrixTerrain[linha][coluna].second == true) {
-                        if (showLegend) {
-                            if (!doneLegend) {
-                                doneLegend = true
-                                tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
-                                countLegend += 1
-                            } else tabuleiroStr += spaceAdd
+                    if (showLegend) {
+                        if (!doneLegend) {
+                            doneLegend = true
+                            tabuleiroStr += "$countLegend  ${matrixTerrain[linha][coluna].first} | "
+                            countLegend += 1
                         } else tabuleiroStr += spaceAdd
-                    } else tabuleiroStr += "  | "
+                    } else tabuleiroStr += spaceAdd
+                } else tabuleiroStr += "  | "
             } else if (showEverything) { tabuleiroStr += matrixTerrain[linha][coluna].first
-                } else if (matrixTerrain[linha][coluna].second == true) { tabuleiroStr += matrixTerrain[linha][coluna].first
-                    } else tabuleiroStr += " "
+            } else if (matrixTerrain[linha][coluna].second == true) { tabuleiroStr += matrixTerrain[linha][coluna].first
+            } else tabuleiroStr += " "
             tabuleiroStr += ""
         }
         tabuleiroStr += " "
