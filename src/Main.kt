@@ -1,95 +1,95 @@
 fun main() {
-    var sair = false
+    val sair = false
     var column = 0
     var line = 0
     var mines = 0
     var wantLegend = false
     var validou = false
-        val invalid = "Invalid response.\n"
-        do {
-            println(makeMenu())
-            val num = readLine()
-            if (num != "0" && num != "1") {
-                println(invalid)
-            }
-            if (num == "1") {
-                do {
-                    println("Enter player name?")
-                    val name = readLine()
-                    if (!isNameValid(name, 3)) {
-                        println(invalid)
-                    }
-                } while (!isNameValid(name, 3))
+    val invalid = "Invalid response.\n"
+    do {
+        println(makeMenu())
+        val num = readLine()
+        if (num != "0" && num != "1") {
+            println(invalid)
+        }
+        if (num == "1") {
+            do {
+                println("Enter player name?")
+                val name = readLine()
+                if (!isNameValid(name, 3)) {
+                    println(invalid)
+                }
+            } while (!isNameValid(name, 3))
 
-                do {
-                    println("Show legend (y/n)?")
-                    val legend = readLine()!!
-                    if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
-                        println(invalid)
-                    }
-                    if (legend == "y" || legend == "Y") {
-                        wantLegend = true
-                    } else if (legend == "n" || legend == "N") {
-                        wantLegend = false
-                    }
-                } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
+            do {
+                println("Show legend (y/n)?")
+                val legend = readLine()!!
+                if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
+                    println(invalid)
+                }
+                if (legend == "y" || legend == "Y") {
+                    wantLegend = true
+                } else if (legend == "n" || legend == "N") {
+                    wantLegend = false
+                }
+            } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
 
-                do {
-                    println("How many lines?")
-                    line = readLine()!!.toInt()
-                    if (line !in 4..9) {
-                        println(invalid)
-                    }
-                } while (line !in 4..9)
+            do {
+                println("How many lines?")
+                line = readLine()!!.toInt()
+                if (line !in 4..9) {
+                    println(invalid)
+                }
+            } while (line !in 4..9)
 
-                do {
-                    println("How many columns?")
-                    column = readLine()!!.toInt()
-                    if (column !in 4..9) {
-                        println(invalid)
-                    }
-                } while (column !in 4..9)
+            do {
+                println("How many columns?")
+                column = readLine()!!.toInt()
+                if (column !in 4..9) {
+                    println(invalid)
+                }
+            } while (column !in 4..9)
 
-                do {
-                    println("How many mines (press enter for default value)?")
-                    val numOfMines = calculateNumMinesForGameConfiguration(line, column)
-                    if (numOfMines != null) {
-                        mines = readLine()!!.toIntOrNull() ?: numOfMines
-                    }
-                    if (!isValidGameMinesConfiguration(line,column,mines)) {
-                        println(invalid)
-                    }
-                } while (!isValidGameMinesConfiguration(line,column,mines))
-                val teste = createMatrixTerrain(line, column, mines)
-                fillNumberOfMines(teste)
-                revealMatrix(teste,0,0)
-                val terreno = makeTerrain(teste,wantLegend,false,true)
-                println(terreno)
-                //fillNumberOfMines(createMatrixTerrain(line, column, mines))
-                //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
+            do {
+                println("How many mines (press enter for default value)?")
+                val numOfMines = calculateNumMinesForGameConfiguration(line, column)
+                if (numOfMines != null) {
+                    mines = readLine()!!.toIntOrNull() ?: numOfMines
+                }
+                if (!isValidGameMinesConfiguration(line,column,mines)) {
+                    println(invalid)
+                }
+            } while (!isValidGameMinesConfiguration(line,column,mines))
+            val teste = createMatrixTerrain(line, column, mines)
+            fillNumberOfMines(teste)
+            revealMatrix(teste,0,0)
+            val terreno = makeTerrain(teste,wantLegend,false,false)
+            println(terreno)
+            //fillNumberOfMines(createMatrixTerrain(line, column, mines))
+            //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
 
-                do {
-                    println("Choose the Target cell (e.g 2D)")
-                    val coords = readLine()
-                    val funcao = getCoordinates(coords)
-                    if (coords != "exit") {
-                        if (funcao != null) {
-                            if (isCoordinateInsideTerrain(funcao, column, line)) {
-                                if (isMovementPValid(funcao, funcao)) { //acabar aqui
-                                    validou = true
-                                } else {
-                                    println(invalid)
-                                }
+            do {
+                println("Choose the Target cell (e.g 2D)")
+                val coords = readLine()
+                val funcao = getCoordinates(coords)
+                if (coords != "exit") {
+                    if (funcao != null) {
+                        if (isCoordinateInsideTerrain(funcao, column, line)) {
+                            if (isMovementPValid(funcao, funcao)) { //acabar aqui
+                                validou = true
                             } else {
                                 println(invalid)
                             }
                         } else {
                             println(invalid)
                         }
-                    } else validou = true
-                } while (!validou)
-            }
-        } while (num != "0" && num != "1")
+                    } else {
+                        println(invalid)
+                    }
+                } else validou = true
+            } while (!validou)
+        }
+    } while (num != "0" && num != "1")
 }
 
 fun makeMenu(): String = "\nWelcome to DEISI Minesweeper\n\n1 - Start New Game\n0 - Exit Game\n"
@@ -99,14 +99,14 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
     var count = 0
     var countLegend = 1
     var spaceString = ""
-    var linhaSize = matrixTerrain.size
     var doneLegend = false
     val colunaSize = matrixTerrain[matrixTerrain.size-1].size
 
     for (linha in 0 until matrixTerrain.size) {
         count += 1
         for (coluna in 0 until matrixTerrain[linha].size) {
-            spaceString = spaceString + "   " //espaços aqui
+            val stringformat = "${matrixTerrain[linha][coluna].first} |"
+            //spaceString = spaceString + "  " //espaços aqui
             if (coluna < matrixTerrain[linha].size-1) {
                 if (showEverything) {
                     if (showLegend) {
@@ -166,7 +166,7 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                 }
                 tabuleiroStr += "\n "
             } else {
-                tabuleiroStr += "\n   "
+                tabuleiroStr += "   \n   "
                 for (coluna in 0 until matrixTerrain[linha].size) {
                     if (coluna != matrixTerrain[linha].size-1) {
                         tabuleiroStr += "---"
@@ -182,11 +182,12 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
             }
         }
     }
+    spaceString = "    ".repeat(colunaSize) + "     "
     if (!showLegend) {
         return tabuleiroStr
     } else {
         val legend2 = createLegend(colunaSize)
-        return "    $legend2    \n$tabuleiroStr   \n$spaceString     "
+        return "    $legend2    \n$tabuleiroStr   \n$spaceString"
     }
 }
 
@@ -254,7 +255,19 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
             }
         }
     } else {
-        getSquareAroundPoint(numLines,numColumns,numLines,numColumns)
+        while (minesNum > 0) {
+            val randomInLine = (0 until numLines).random()
+            val randomInColumn = (0 until numColumns).random()
+            val squarePoint = getSquareAroundPoint(randomInLine,randomInColumn,numLines,numColumns)
+            val yleft = squarePoint.first.first
+            val xleft = squarePoint.first.second
+            val yright = squarePoint.second.first
+            val xright = squarePoint.second.second
+            if (isEmptyAround(matrix,randomInLine,randomInColumn,yleft,xleft,yright,xright)) {
+                matrix[randomInLine][randomInColumn] = Pair("*", false)
+                minesNum--
+            }
+        }
     }
     return matrix
 }
@@ -328,67 +341,36 @@ fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) {
 }
 
 fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int, coordX: Int, endGame: Boolean = false) {
-    var numeroAtual = ""
-    if (coordY > 0 && coordX > 0) {
-        if (matrixTerrain[coordY - 1][coordX - 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY - 1][coordX - 1].first
-            matrixTerrain[coordY - 1][coordX - 1] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordY > 0 && coordX < matrixTerrain.size-1) {
-        if (matrixTerrain[coordY - 1][coordX + 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY - 1][coordX + 1].first
-            matrixTerrain[coordY - 1][coordX + 1] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordY < matrixTerrain.size-1 && coordX > 0) {
-        if (matrixTerrain[coordY + 1][coordX - 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY + 1][coordX - 1].first
-            matrixTerrain[coordY + 1][coordX - 1] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordY < matrixTerrain.size-1 && coordX < matrixTerrain.size-1) {
-        if (matrixTerrain[coordY + 1][coordX + 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY + 1][coordX + 1].first
-            matrixTerrain[coordY + 1][coordX + 1] = Pair("$numeroAtual", true)
-        }
-    }
-    // Check Above, Below, Sides
-    if (coordY < matrixTerrain.size-1) {
-        if (matrixTerrain[coordY + 1][coordX].first != "*") {
-            numeroAtual = matrixTerrain[coordY + 1][coordX].first
-            matrixTerrain[coordY + 1][coordX] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordY > 0) {
-        if (matrixTerrain[coordY - 1][coordX].first != "*") {
-            numeroAtual = matrixTerrain[coordY - 1][coordX].first
-            matrixTerrain[coordY - 1][coordX] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordX > 0) {
-        if (matrixTerrain[coordY][coordX - 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY][coordX - 1].first
-            matrixTerrain[coordY][coordX - 1] = Pair("$numeroAtual", true)
-        }
-    }
-    if (coordX < matrixTerrain.size-1) {
-        if (matrixTerrain[coordY][coordX + 1].first != "*") {
-            numeroAtual = matrixTerrain[coordY][coordX + 1].first
-            matrixTerrain[coordY][coordX + 1] = Pair("$numeroAtual", true)
+    val squarePoint = getSquareAroundPoint(coordY,coordX, matrixTerrain.size, matrixTerrain[matrixTerrain.size-1].size)
+    val yleft = squarePoint.first.first
+    val xleft = squarePoint.first.second
+    val yright = squarePoint.second.first
+    val xright = squarePoint.second.second
+
+    for (linha in yleft..yright) {
+        for (coluna in xleft..xright) {
+            if (!endGame) {
+                if (matrixTerrain[linha][coluna].first != "*") {
+                    matrixTerrain[linha][coluna] = Pair(matrixTerrain[linha][coluna].first, true)
+                }
+            } else {
+                matrixTerrain[linha][coluna] = Pair(matrixTerrain[linha][coluna].first, true)
+            }
         }
     }
 }
 
 fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int, yl: Int, xl: Int, yr: Int, xr: Int): Boolean {
-    var maxLinha = matrixTerrain.size
-    var maxColuna = 0
-    for (linha in 0 until matrixTerrain.size) {
-        for (coluna in 0 until matrixTerrain[linha].size) {
-            maxColuna = matrixTerrain[linha].size
+    for (linha in yl..yr) {
+        for (coluna in xl..xr) {
+            if (!(centerY == linha && centerX == coluna)) {
+                if (matrixTerrain[linha][coluna].first == "*" || matrixTerrain[linha][coluna].first == "P" || matrixTerrain[linha][coluna].first == "f") {
+                    return false
+                }
+            }
         }
     }
-    return false
+    return true
 }
 
 fun isMovementPValid(currentCoord : Pair<Int, Int>, targetCoord : Pair<Int, Int>): Boolean {
