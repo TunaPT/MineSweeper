@@ -1,74 +1,52 @@
-
+var column = 0
+var line = 0
+var mines = 0
+var wantLegend = false
+var validou = false
+val invalid = "Invalid response.\n"
 
 fun main() {
-    var column = 0
-    var line = 0
-    var mines = 0
-    var wantLegend = false
-    var validou = false
-    val invalid = "Invalid response.\n"
     do {
         println(makeMenu())
         val num = readLine()
-        if (num != "0" && num != "1") {
-            println(invalid)
-        }
+        if (num != "0" && num != "1") println(invalid)
         if (num == "1") {
             do {
                 println("Enter player name?")
                 val name = readLine()
-                if (!isNameValid(name, 3)) {
-                    println(invalid)
-                }
+                if (!isNameValid(name, 3)) println(invalid)
             } while (!isNameValid(name, 3))
-
             do {
                 println("Show legend (y/n)?")
                 val legend = readLine()!!
-                if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") {
-                    println(invalid)
-                }
+                if (legend != "y" && legend != "n" && legend != "Y" && legend != "N") println(invalid)
                 if (legend == "y" || legend == "Y") {
                     wantLegend = true
                 } else if (legend == "n" || legend == "N") {
                     wantLegend = false
                 }
             } while (legend != "y" && legend != "n" && legend != "Y" && legend != "N")
-
             do {
                 println("How many lines?")
                 line = readLine()!!.toInt()
-                if (line !in 4..9) {
-                    println(invalid)
-                }
+                if (line !in 4..9) println(invalid)
             } while (line !in 4..9)
-
             do {
                 println("How many columns?")
                 column = readLine()!!.toInt()
-                if (column !in 4..9) {
-                    println(invalid)
-                }
+                if (column !in 4..9) println(invalid)
             } while (column !in 4..9)
-
             do {
                 println("How many mines (press enter for default value)?")
                 val numOfMines = calculateNumMinesForGameConfiguration(line, column)
-                if (numOfMines != null) {
-                    mines = readLine()!!.toIntOrNull() ?: numOfMines
-                }
-                if (!isValidGameMinesConfiguration(line,column,mines)) {
-                    println(invalid)
-                }
+                if (numOfMines != null) mines = readLine()!!.toIntOrNull() ?: numOfMines
+                if (!isValidGameMinesConfiguration(line,column,mines)) println(invalid)
             } while (!isValidGameMinesConfiguration(line,column,mines))
             val teste = createMatrixTerrain(line, column, mines)
             fillNumberOfMines(teste)
             revealMatrix(teste,0,0)
             val terreno = makeTerrain(teste,wantLegend,false,false)
             println(terreno)
-            //fillNumberOfMines(createMatrixTerrain(line, column, mines))
-            //println(makeTerrain(createMatrixTerrain(line, column, mines),false,false,false))
-
             do {
                 println("Choose the Target cell (e.g 2D)")
                 val coords = readLine()
@@ -76,7 +54,7 @@ fun main() {
                 if (coords != "exit") {
                     if (funcao != null) {
                         if (isCoordinateInsideTerrain(funcao, column, line)) {
-                            if (isMovementPValid(funcao, funcao)) { //acabar aqui
+                            if (isMovementPValid(funcao, funcao)) {
                                 validou = true
                             } else {
                                 println(invalid)
