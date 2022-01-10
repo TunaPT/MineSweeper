@@ -1,3 +1,12 @@
+/*fun main() {
+    val teste = createMatrixTerrain(3, 3, 2)
+    fillNumberOfMines(teste)
+    //revealMatrix(teste,0,0)
+    val terreno = makeTerrain(teste,false,false,true)
+    println(terreno)
+}*/
+
+
 fun main() {
     val sair = false
     var column = 0
@@ -238,7 +247,7 @@ fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int)
     } else return true
 }
 
-fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = false): Array<Array<Pair<String,Boolean>>>{
+fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = true): Array<Array<Pair<String,Boolean>>>{
 
     val matrix = Array(numLines){Array(numColumns){Pair(" ", false)} }
     matrix[0][0] = Pair("P",true)
@@ -263,9 +272,14 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
             val xleft = squarePoint.first.second
             val yright = squarePoint.second.first
             val xright = squarePoint.second.second
-            if (isEmptyAround(matrix,randomInLine,randomInColumn,yleft,xleft,yright,xright)) {
-                matrix[randomInLine][randomInColumn] = Pair("*", false)
-                minesNum--
+            //println("$randomInLine  |  $randomInColumn")
+            //println("-------------")
+            if (matrix[randomInLine][randomInColumn].first != "*" && matrix[randomInLine][randomInColumn].first != "P" && matrix[randomInLine][randomInColumn].first != "f") {
+                if (isEmptyAround(matrix, randomInLine, randomInColumn, yleft, xleft, yright, xright)) {
+                    //println("ola")
+                    matrix[randomInLine][randomInColumn] = Pair("*", false)
+                    minesNum--
+                }
             }
         }
     }
@@ -364,10 +378,9 @@ fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: I
     for (linha in yl..yr) {
         for (coluna in xl..xr) {
             val terrain = matrixTerrain[linha][coluna].first
-            if (!(centerY == linha && centerX == coluna)) {
-                if (terrain == "*" || terrain == "P" || terrain == "f") {
-                    return false
-                }
+            //println(matrixTerrain[linha][coluna].first)
+            if (!(centerY == linha && centerX == coluna) && (terrain == "*" || terrain == "f" || terrain == "P")) {
+                return false
             }
         }
     }
