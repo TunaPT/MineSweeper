@@ -139,10 +139,10 @@ fun makeTerrain(matrixTerrain: Array<Array<Pair<String, Boolean>>>, showLegend: 
                 }
             } else {
                 if (showEverything) {
-                    tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+                    tabuleiroStr += matrixTerrain[linha][coluna].first
                 } else {
                     if (matrixTerrain[linha][coluna].second == true) {
-                        tabuleiroStr += "${matrixTerrain[linha][coluna].first}"
+                        tabuleiroStr += matrixTerrain[linha][coluna].first
                     } else {
                         tabuleiroStr += " "
                     }
@@ -363,8 +363,9 @@ fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int
 fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: Int, centerX: Int, yl: Int, xl: Int, yr: Int, xr: Int): Boolean {
     for (linha in yl..yr) {
         for (coluna in xl..xr) {
+            val terrain = matrixTerrain[linha][coluna].first
             if (!(centerY == linha && centerX == coluna)) {
-                if (matrixTerrain[linha][coluna].first == "*" || matrixTerrain[linha][coluna].first == "P" || matrixTerrain[linha][coluna].first == "f") {
+                if (terrain == "*" || terrain == "P" || terrain == "f") {
                     return false
                 }
             }
@@ -422,29 +423,10 @@ fun getCoordinates (readText: String?): Pair<Int, Int>? {
 }
 
 fun getSquareAroundPoint(linha: Int, coluna: Int, numLines: Int, numColumns: Int): Pair<Pair<Int, Int>, Pair<Int, Int>> {
-    var linha1 = 0
-    var linha2 = 0
-    var coluna1 = 0
-    var coluna2 = 0
-    if (linha > 0) {
-        linha1 = linha-1
-    } else {
-        linha1 = linha
-    }
-    if (linha < numLines) {
-        linha2 = linha+1
-    } else {
-        linha2 = linha
-    }
-    if (coluna > 0) {
-        coluna1 = coluna-1
-    } else {
-        coluna1 = coluna
-    }
-    if (coluna < numColumns) {
-        coluna2 = coluna+1
-    } else {
-        coluna2 = coluna
-    }
-    return Pair(Pair(linha1,coluna1),Pair(linha2,coluna2))
+    val yleft = if (linha-1 !in 0 until numLines) linha else linha-1
+    val xleft = if (coluna-1 !in 0 until numColumns) coluna else coluna-1
+    val yright = if (linha+1 !in 0 until numLines) linha else linha+1
+    val xright = if (coluna+1 !in 0 until numColumns) coluna else coluna+1
+
+    return Pair(Pair(yleft,xleft),Pair(yright,xright))
 }
