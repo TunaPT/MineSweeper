@@ -41,51 +41,51 @@ fun main() {
                 if (numOfMines != null) mines = readLine()!!.toIntOrNull() ?: numOfMines
                 if (!isValidGameMinesConfiguration(line,column,mines)) println(invalid)
             } while (!isValidGameMinesConfiguration(line,column,mines))
-            val teste = createMatrixTerrain(line, column, mines)
-            fillNumberOfMines(teste)
-            revealMatrix(teste,0,0)
-            val terreno = makeTerrain(teste,wantLegend,false,false)
+            val matrixTerrain = createMatrixTerrain(line, column, mines)
+            fillNumberOfMines(matrixTerrain)
+            revealMatrix(matrixTerrain,0,0) // revela os numeros (se existir) à volta da posição inicial
+            val terreno = makeTerrain(matrixTerrain,wantLegend,false,false)
             println(terreno)
-            funcaoTargetCell(teste)
+            funcaoTargetCell(matrixTerrain) // funçao de movimentar
         }
     } while (num != "0" && num != "1")
 }
 
-fun funcaoTargetCell(teste: Array<Array<Pair<String,Boolean>>>) {
+fun funcaoTargetCell(matrixTerrrain: Array<Array<Pair<String,Boolean>>>) {
     val matrix = Array(line) { Array(column) { Pair(" ", false) } }
     var cordenadas: Pair<Int,Int>?
     var actualPosition = Pair(0,0)
-    var coordsAnterior = Pair(matrix[0][0].first,true)
+    var coordsAnterior = Pair(matrix[0][0].first,true) // Pair<String, Boolean>
     do {
         do {
             println("Choose the Target cell (e.g 2D)")
             val coords = readLine()
-            cordenadas = getCoordinates(coords)
+            cordenadas = getCoordinates(coords) // retorna Pair<Int, Int>? se verificar-se que é válido
             if (coords == "exit") return
-            if (coords == "abracadabra") {
-                println(makeTerrain(teste, wantLegend, showEverything = true))
+            if (coords == "abracadabra") { // mostra o terreno completo
+                println(makeTerrain(matrixTerrrain, wantLegend, showEverything = true))
             } else {
                 if (cordenadas == null || !isMovementPValid(actualPosition, cordenadas) || !isCoordinateInsideTerrain(
                         cordenadas, line, column)) println(invalid)
             }
         } while (cordenadas == null || !isMovementPValid(actualPosition, cordenadas) || !isCoordinateInsideTerrain(
                 cordenadas, line, column))
-        if (teste[cordenadas.first][cordenadas.second].first == "*") {
-            println(makeTerrain(teste, wantLegend, showEverything = true))
+        if (matrixTerrrain[cordenadas.first][cordenadas.second].first == "*") { // se a posição escolhida for mina perde o jogo
+            println(makeTerrain(matrixTerrrain, wantLegend, showEverything = true))
             println("You lost the game!")
             return main()
-        } else if (teste[cordenadas.first][cordenadas.second].first == "f") {
-            println(makeTerrain(teste, wantLegend, showEverything = true))
+        } else if (matrixTerrrain[cordenadas.first][cordenadas.second].first == "f") { // se a posição escolhida for igual à casa final ganha o jogo
+            println(makeTerrain(matrixTerrrain, wantLegend, showEverything = true))
             println("You win the game!")
             return main()
         }
         actualPosition = Pair(cordenadas.first,cordenadas.second)
-        revealMatrix(teste,cordenadas.first, cordenadas.second)
-        coordsAnterior = Pair(teste[cordenadas.first][cordenadas.second].first,true)
-        teste[cordenadas.first][cordenadas.second] = Pair("P",true)
-        teste[0][0] = Pair(" ",true)
-        println(makeTerrain(teste,wantLegend, showEverything = false))
-        teste[cordenadas.first][cordenadas.second] = coordsAnterior
+        revealMatrix(matrixTerrrain,cordenadas.first, cordenadas.second) // revela os numeros à volta da posiçao atual, conforme vai andando
+        coordsAnterior = Pair(matrixTerrrain[cordenadas.first][cordenadas.second].first,true)
+        matrixTerrrain[cordenadas.first][cordenadas.second] = Pair("P",true)
+        matrixTerrrain[0][0] = Pair(" ",true) // altera o valor da posição inicial após movimentar-se pela primeira vez
+        println(makeTerrain(matrixTerrrain,wantLegend, showEverything = false)) // cria novo terreno com as condições novas
+        matrixTerrrain[cordenadas.first][cordenadas.second] = coordsAnterior
     } while (true)
 }
 
@@ -208,19 +208,19 @@ fun isValidGameMinesConfiguration(numLines: Int, numColumns: Int, numMines: Int)
     } else return true
 }
 
-fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = true): Array<Array<Pair<String,Boolean>>>{
+fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePathToWin: Boolean = false): Array<Array<Pair<String,Boolean>>>{
 
-    val matrix = Array(numLines){Array(numColumns){Pair(" ", false)} }
-    matrix[0][0] = Pair("P",true)
-    matrix[numLines-1][numColumns-1] = Pair("f",true)
+    val matrix = Array(numLines){Array(numColumns){Pair(" ", false)} }  // Array de Array de Pairs
+    matrix[0][0] = Pair("P",true) // Altera valor da Primeira Posição
+    matrix[numLines-1][numColumns-1] = Pair("f",true) // Altera valor da Última Posição
 
-    var minesNum = numMines
-    if (!ensurePathToWin) {
+    var minesNum = numMines  // numMines é uma variável imutável, pelo que foi associado o mesmo valor a outra variável
+    if (!ensurePathToWin) { // Modo predefinido
         while (minesNum > 0) {
-            val randomInLine = (0 until numLines).random()
+            val randomInLine = (0 until numLines).random() // 0 in numLines -1
             val randomInColumn = (0 until numColumns).random()
-            if (matrix[randomInLine][randomInColumn].first == " ") {
-                matrix[randomInLine][randomInColumn] = Pair("*",false)
+            if (matrix[randomInLine][randomInColumn].first == " ") { // Vai confirmar se o primeiro valor do Pair correspondente à posição atual, originada de forma random, é um espaço vazio
+                matrix[randomInLine][randomInColumn] = Pair("*",false) // Preenche a posição com uma mina se for um espaço vazio
                 minesNum--
             }
         }
@@ -228,15 +228,14 @@ fun createMatrixTerrain(numLines: Int, numColumns: Int, numMines: Int, ensurePat
         while (minesNum > 0) {
             val randomInLine = (0 until numLines).random()
             val randomInColumn = (0 until numColumns).random()
-            val squarePoint = getSquareAroundPoint(randomInLine,randomInColumn,numLines,numColumns)
-            val yleft = squarePoint.first.first
+            val squarePoint = getSquareAroundPoint(randomInLine,randomInColumn,numLines,numColumns) // retorna Pair<Pair<Int, Int>, Pair<Int, Int>> | Pair(Pair(yleft,xleft),Pair(yright,xright))
+            val yleft = squarePoint.first.first // Vai buscar a respetiva posição no Pair
             val xleft = squarePoint.first.second
             val yright = squarePoint.second.first
             val xright = squarePoint.second.second
-            val matrixCheck = matrix[randomInLine][randomInColumn].first
-            if (matrixCheck != "*" && matrixCheck != "P" && matrixCheck != "f") {
+            if (matrix[randomInLine][randomInColumn].first == " ") { // Caso a posição aleatória seja uma casa vazia, avança para a verificação do campo à volta dessa posição
                 if (isEmptyAround(matrix, randomInLine, randomInColumn, yleft, xleft, yright, xright)) {
-                    matrix[randomInLine][randomInColumn] = Pair("*", false)
+                    matrix[randomInLine][randomInColumn] = Pair("*", false) // Estando vazio à volta, aplica uma mina nessa posição
                     minesNum--
                 }
             }
@@ -294,19 +293,10 @@ fun countNumberOfMinesCloseToCurrentCell(matrixTerrain: Array<Array<Pair<String,
 fun fillNumberOfMines(matrixTerrain: Array<Array<Pair<String, Boolean>>>) {
     for (linha in 0 until matrixTerrain.size) {
         for (coluna in 0 until matrixTerrain[linha].size) {
-            if (coluna < matrixTerrain[linha].size-1) {
-                if (matrixTerrain[linha][coluna].first == " ") {
-                    val numMine = countNumberOfMinesCloseToCurrentCell(matrixTerrain, linha, coluna)
-                    if (numMine != 0) {
-                        matrixTerrain[linha][coluna] = Pair("$numMine", false)
-                    }
-                }
-            } else {
-                if (matrixTerrain[linha][coluna].first == " ") {
-                    val numMine2 = countNumberOfMinesCloseToCurrentCell(matrixTerrain, linha, coluna)
-                    if (numMine2 != 0) {
-                        matrixTerrain[linha][coluna] = Pair("$numMine2", false)
-                    }
+            if (matrixTerrain[linha][coluna].first == " ") {
+                val numMine = countNumberOfMinesCloseToCurrentCell(matrixTerrain, linha, coluna)
+                if (numMine != 0) {
+                    matrixTerrain[linha][coluna] = Pair("$numMine", false) // se a posição for uma casa vazia e tiver minas à volta, coloca o número de minas à volta
                 }
             }
         }
@@ -323,10 +313,10 @@ fun revealMatrix(matrixTerrain: Array<Array<Pair<String, Boolean>>>, coordY: Int
     for (linha in yleft..yright) {
         for (coluna in xleft..xright) {
             if (!endGame) {
-                if (matrixTerrain[linha][coluna].first != "*") {
+                if (matrixTerrain[linha][coluna].first != "*") { // se à volta for diferente de uma mina, revela essa casa
                     matrixTerrain[linha][coluna] = Pair(matrixTerrain[linha][coluna].first, true)
                 }
-            } else {
+            } else { // se o jogo acabar revela o tabuleiro completo
                 matrixTerrain[linha][coluna] = Pair(matrixTerrain[linha][coluna].first, true)
             }
         }
@@ -337,7 +327,7 @@ fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: I
     for (linha in yl..yr) {
         for (coluna in xl..xr) {
             val terrain = matrixTerrain[linha][coluna].first
-            if (!(centerY == linha && centerX == coluna) && (terrain == "*" || terrain == "f" || terrain == "P")) {
+            if (!(centerY == linha && centerX == coluna) && (terrain == "*" || terrain == "f" || terrain == "P")) { // Se não estiver a verificar na posição do meio (ou seja, está a verificar à volta) e uma das posições à volta tiver um destes caracteres, retorna false imediatamente
                 return false
             }
         }
@@ -345,7 +335,7 @@ fun isEmptyAround(matrixTerrain: Array<Array<Pair<String, Boolean>>>, centerY: I
     return true
 }
 
-fun isMovementPValid(currentCoord : Pair<Int, Int>, targetCoord : Pair<Int, Int>): Boolean {
+fun isMovementPValid(currentCoord : Pair<Int, Int>, targetCoord : Pair<Int, Int>): Boolean { // verifica se está a mover apenas uma casa em todas as direções
     if (targetCoord.first+1 == currentCoord.first || targetCoord.first-1 == currentCoord.first || targetCoord.first == currentCoord.first) {
         if (targetCoord.second+1 == currentCoord.second || targetCoord.second-1 == currentCoord.second || targetCoord.second == currentCoord.second) {
             return true
@@ -369,7 +359,7 @@ fun getCoordinates (readText: String?): Pair<Int, Int>? {
     if (readText != null && readText.length == 2) {
         var count = 0
         if (readText[0].isDigit()) {
-            val valor = readText[0].toInt() - 49
+            val valor = readText[0].toInt() - 49 // valor exato está com base na tabela ASCII
             if (readText[1].isLetter()) {
                 val legendLetter = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 val legendLetter2 = "abcdefghijklmnopqrstuvwxyz"
